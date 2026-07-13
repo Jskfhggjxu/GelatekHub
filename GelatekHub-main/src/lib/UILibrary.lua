@@ -45,6 +45,10 @@ function Library:Create(Name, StartupText, Color)
 	local MainCorner = Instance.new("UICorner")
 	local Title = Instance.new("TextLabel")
 	local Exit = Instance.new("ImageButton")
+	
+	
+	local Minimize = Instance.new("TextButton")
+	
 	local LineSide = Instance.new("TextLabel")
 	local LineTop = Instance.new("TextLabel")
 	
@@ -59,7 +63,7 @@ function Library:Create(Name, StartupText, Color)
 	local Tabs = Instance.new("Folder")
 	local Drag = Instance.new("Frame")
 
-	--Properties:
+	
 	GelatekUI.Name = "GelatekUI"
 
 	Main.Name = "Main"
@@ -92,6 +96,18 @@ function Library:Create(Name, StartupText, Color)
 	Exit.Size = UDim2.new(0, 15, 0, 15)
 	Exit.Image = "http://www.roblox.com/asset/?id=10444336846"
 	Exit.ImageTransparency = 1.000
+
+	
+	Minimize.Name = "Minimize"
+	Minimize.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Minimize.BackgroundTransparency = 1.000
+	Minimize.Position = UDim2.new(0.87, 0, 0.026, 0) 
+	Minimize.Size = UDim2.new(0, 15, 0, 15)
+	Minimize.Font = Enum.Font.GothamBold
+	Minimize.Text = "-"
+	Minimize.TextColor3 = Color3.fromRGB(200, 200, 200)
+	Minimize.TextSize = 16.000
+	Minimize.TextTransparency = 1.000 
 
 	LineSide.Name = "LineSide"
 	LineSide.BackgroundColor3 = Color3.fromRGB(54, 54, 54)
@@ -181,6 +197,10 @@ function Library:Create(Name, StartupText, Color)
 	MainCorner.Parent = Main
 	Title.Parent = Main
 	Exit.Parent = Main
+	
+	
+	Minimize.Parent = Main
+	
 	LineSide.Parent = Main
 	LineTop.Parent = Main
 	TabList.Parent = Main
@@ -190,6 +210,7 @@ function Library:Create(Name, StartupText, Color)
 	Logo.Parent = Main
 	Credit.Parent = Logo
 	Tabs.Parent = Main
+	
 	task.spawn(function()
 		Logo:TweenPosition(UDim2.new(0.299,0,0.2,0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 1)
 		wait(1.5)
@@ -211,12 +232,17 @@ function Library:Create(Name, StartupText, Color)
 			["Time"] = 0.3,
 			["ImageTransparency"] = 0
 		})
+		
+		TweenTextTransparency(Main.Minimize, {
+			["Time"] = 0.3,
+			["TextTransparency"] = 0
+		})
 		Main.TabList:TweenSize(UDim2.new(0,113,0,235), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.3)
 	end)
 
-	do --// Dragging
+	do 
 		local dragToggle
-		local dragSpeed = 0.1 -- You can edit this.
+		local dragSpeed = 0.1 
 		local dragInput
 		local dragStart
 		local dragPos
@@ -257,8 +283,51 @@ function Library:Create(Name, StartupText, Color)
 		end)
 	end
 
+	
+	
+	
 	Exit.MouseButton1Click:Connect(function()
-		Main.Parent:Destroy()
+		GelatekUI.Enabled = false
+	end)
+	
+	
+	
+	
+	local isMinimized = false
+	Minimize.MouseButton1Click:Connect(function()
+		isMinimized = not isMinimized
+		if isMinimized then
+			Minimize.Text = "+"
+			
+			Main:TweenSize(UDim2.new(0, 375, 0, 29), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.3, true)
+			
+			LineSide.Visible = false
+			LineTop.Visible = false
+			TabList.Visible = false
+			Tabs.Visible = false
+		else
+			Minimize.Text = "-"
+			
+			Main:TweenSize(UDim2.new(0, 375, 0, 267), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.3, true)
+			
+			task.delay(0.3, function()
+				if not isMinimized then
+					LineSide.Visible = true
+					LineTop.Visible = true
+					TabList.Visible = true
+					Tabs.Visible = true
+				end
+			end)
+		end
+	end)
+
+	
+	
+	
+	UserInputService.InputBegan:Connect(function(input, gameProcessed)
+		if not gameProcessed and input.KeyCode == Enum.KeyCode.LeftControl then
+			GelatekUI.Enabled = not GelatekUI.Enabled
+		end
 	end)
 	
 	local LibraryTabs = {}

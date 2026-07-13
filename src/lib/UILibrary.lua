@@ -45,6 +45,10 @@ function Library:Create(Name, StartupText, Color)
 	local MainCorner = Instance.new("UICorner")
 	local Title = Instance.new("TextLabel")
 	local Exit = Instance.new("ImageButton")
+	
+	-- 【新增】最小化按钮声明
+	local Minimize = Instance.new("TextButton")
+	
 	local LineSide = Instance.new("TextLabel")
 	local LineTop = Instance.new("TextLabel")
 	
@@ -92,6 +96,18 @@ function Library:Create(Name, StartupText, Color)
 	Exit.Size = UDim2.new(0, 15, 0, 15)
 	Exit.Image = "http://www.roblox.com/asset/?id=10444336846"
 	Exit.ImageTransparency = 1.000
+
+	-- 【新增】最小化按钮样式属性设置
+	Minimize.Name = "Minimize"
+	Minimize.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Minimize.BackgroundTransparency = 1.000
+	Minimize.Position = UDim2.new(0.87, 0, 0.026, 0) -- 刚好在关闭按钮左边
+	Minimize.Size = UDim2.new(0, 15, 0, 15)
+	Minimize.Font = Enum.Font.GothamBold
+	Minimize.Text = "-"
+	Minimize.TextColor3 = Color3.fromRGB(200, 200, 200)
+	Minimize.TextSize = 16.000
+	Minimize.TextTransparency = 1.000 -- 初始透明，跟随出场动画淡入
 
 	LineSide.Name = "LineSide"
 	LineSide.BackgroundColor3 = Color3.fromRGB(54, 54, 54)
@@ -181,6 +197,10 @@ function Library:Create(Name, StartupText, Color)
 	MainCorner.Parent = Main
 	Title.Parent = Main
 	Exit.Parent = Main
+	
+	-- 【新增】将最小化按钮挂载到主面板
+	Minimize.Parent = Main
+	
 	LineSide.Parent = Main
 	LineTop.Parent = Main
 	TabList.Parent = Main
@@ -190,6 +210,7 @@ function Library:Create(Name, StartupText, Color)
 	Logo.Parent = Main
 	Credit.Parent = Logo
 	Tabs.Parent = Main
+	
 	task.spawn(function()
 		Logo:TweenPosition(UDim2.new(0.299,0,0.2,0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 1)
 		wait(1.5)
@@ -210,6 +231,11 @@ function Library:Create(Name, StartupText, Color)
 		TweenImageTransparency(Main.Exit, {
 			["Time"] = 0.3,
 			["ImageTransparency"] = 0
+		})
+		-- 【新增】同步让最小化按钮淡入显现
+		TweenTextTransparency(Main.Minimize, {
+			["Time"] = 0.3,
+			["TextTransparency"] = 0
 		})
 		Main.TabList:TweenSize(UDim2.new(0,113,0,235), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.3)
 	end)
@@ -257,8 +283,51 @@ function Library:Create(Name, StartupText, Color)
 		end)
 	end
 
+	-- ==========================================
+	-- 【核心修改 1】关闭按钮：改为只隐藏，不销毁逻辑
+	-- ==========================================
 	Exit.MouseButton1Click:Connect(function()
-		Main.Parent:Destroy()
+		GelatekUI.Enabled = false
+	end)
+	
+	-- ==========================================
+	-- 【核心修改 2】最小化按钮：控制高度缩放与内容隐藏
+	-- ==========================================
+	local isMinimized = false
+	Minimize.MouseButton1Click:Connect(function()
+		isMinimized = not isMinimized
+		if isMinimized then
+			Minimize.Text = "+"
+			-- 缩减主面板高度到只剩顶部标题栏 (29像素)
+			Main:TweenSize(UDim2.new(0, 375, 0, 29), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.3, true)
+			-- 立即隐藏组件防止溢出
+			LineSide.Visible = false
+			LineTop.Visible = false
+			TabList.Visible = false
+			Tabs.Visible = false
+		else
+			Minimize.Text = "-"
+			-- 恢复原版主面板大小 (267像素)
+			Main:TweenSize(UDim2.new(0, 375, 0, 267), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.3, true)
+			-- 动画结束后恢复组件显示
+			task.delay(0.3, function()
+				if not isMinimized then
+					LineSide.Visible = true
+					LineTop.Visible = true
+					TabList.Visible = true
+					Tabs.Visible = true
+				end
+			end)
+		end
+	end)
+
+	-- ==========================================
+	-- 【核心修改 3】快捷键唤醒：按左Ctrl键 显示/隐藏 UI
+	-- ==========================================
+	UserInputService.InputBegan:Connect(function(input, gameProcessed)
+		if not gameProcessed and input.KeyCode == Enum.KeyCode.LeftControl then
+			GelatekUI.Enabled = not GelatekUI.Enabled
+		end
 	end)
 	
 	local LibraryTabs = {}

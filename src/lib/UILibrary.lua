@@ -284,76 +284,81 @@ function Library:Create(Name, StartupText, Color)
 	end
 
 	-- ==========================================
-	-- 【核心修改 1】关闭按钮：改为只隐藏，不销毁逻辑
+	-- 【全新重构】悬浮窗 UI、关闭逻辑与快捷键唤醒
 	-- ==========================================
-	Exit.MouseButton1Click:Connect(function()
-		GelatekUI.Enabled = false
-	end)
 	
--- ==========================================================================
-	-- 【完美终结版 2】最小化按钮：彻底根除背景毛边残留、永久锁死坐标防止往上蹿
-	-- ==========================================================================
-	local isMinimized = false
-	local originalSize = UDim2.new(0, 375, 0, 267)
-	local minimizedSize = UDim2.new(0, 375, 0, 29)
-	local TweenService = game:GetService("TweenService")
+	-- 1. 创建圆形悬浮窗
+	local FloatingButton = Instance.new("TextButton")
+	local FloatingCorner = Instance.new("UICorner")
 
-	-- 【核心救星】：在点击事件触发前，在初始化阶段直接记下 Main 面板最干净的初始 Y 轴 Offset 状态
-	-- 这样放大和缩小时就能用绝对固定的常量去计算，从根本上防止多次点击后坐标发生累计污染往上蹿！
-	local initialYOffset = Main.Position.Y.Offset
+	FloatingButton.Name = "FloatingButton"
+	FloatingButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	FloatingButton.BackgroundTransparency = 0.4 -- 40% 黑色半透明背景
+	FloatingButton.Position = UDim2.new(0.5, -25, 0.05, 0) -- 默认出生在屏幕正上方偏下
+	FloatingButton.Size = UDim2.new(0, 50, 0, 50) -- 50x50 正方形
+	FloatingButton.Font = Enum.Font.GothamBold
+	FloatingButton.Text = "G"
+	FloatingButton.TextColor3 = Color or Color3.fromRGB(247, 83, 91) -- 字体颜色跟随 UI 主题色
+	FloatingButton.TextSize = 24
+	FloatingButton.AutoButtonColor = false
+	FloatingButton.Visible = false -- 初始状态隐藏，等待主面板关闭时显示
+	FloatingButton.Parent = GelatekUI
 
-	Minimize.MouseButton1Click:Connect(function()
-		isMinimized = not isMinimized
-		
-		-- 固定的绝对坐标计算（不依赖会随动画乱变当前的 Main.Position）
-		-- 267 缩到 29 减少了 238 像素，由于中心锚点(0.5, 0.5)，顶部会往上顶出 119 像素
-		-- 最小化时：目标 Y 应该是 原始Y + 119； 展开回复时：目标 Y 必须死死回到 原始Y
-		local targetYOffset = isMinimized and (initialYOffset + 119) or initialYOffset
-		local targetPosition = UDim2.new(Main.Position.X.Scale, Main.Position.X.Offset, Main.Position.Y.Scale, targetYOffset)
+	FloatingCorner.CornerRadius = UDim.new(1, 0) -- 圆角设为 1，将其变成完美圆形
+	FloatingCorner.Parent = FloatingButton
 
-		if isMinimized then
-			Minimize.Text = "+"
-			
-			-- 1. 瞬间关闭所有子组件的可见性，彻底解决背景、灰边、边框溢出毛边残留
-			LineTop.Visible = false
-			LineSide.Visible = false
-			TabList.Visible = false
-			Tabs.Visible = false
-			
-			-- 2. 同步执行 大小缩小 ＋ 位置向下补偿 动画
-			TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {
-				Size = minimizedSize,
-				Position = targetPosition
-			}):Play()
-		else
-			Minimize.Text = "-"
-			
-			-- 1. 同步执行 大小恢复 ＋ 精准归位 动画（死死锁回初始 initialYOffset）
-			TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {
-				Size = originalSize,
-				Position = targetPosition
-			}):Play()
-			
-			-- 2. 完美的等大框完全弹开后，再亮出内部组件，视觉体验最丝滑
-			task.delay(0.2, function()
-				if not isMinimized then
-					LineTop.Visible = true
-					LineSide.Visible = true
-					TabList.Visible = true
-					Tabs.Visible = true
+	-- 2. 为悬浮窗添加丝滑的拖拽功能（防止挡住游戏视野）
+	local floatDragToggle = false
+	local floatDragStart
+	local floatStartPos
+
+	FloatingButton.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+			floatDragToggle = true
+			floatDragStart = input.Position
+			floatStartPos = FloatingButton.Position
+			input.Changed:Connect(function()
+				if (input.UserInputState == Enum.UserInputState.End) then
+					floatDragToggle = false
 				end
 			end)
 		end
 	end)
 
-	-- ==========================================
-	-- 【核心修改 3】快捷键唤醒：按左Ctrl键 显示/隐藏 UI
-	-- ==========================================
-	UserInputService.InputBegan:Connect(function(input, gameProcessed)
-		if not gameProcessed and input.KeyCode == Enum.KeyCode.LeftControl then
-			GelatekUI.Enabled = not GelatekUI.Enabled
+	FloatingButton.InputChanged:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			if floatDragToggle then
+				local Delta = input.Position - floatDragStart
+				local Position = UDim2.new(floatStartPos.X.Scale, floatStartPos.X.Offset + Delta.X, floatStartPos.Y.Scale, floatStartPos.Y.Offset + Delta.Y)
+				FloatingButton.Position = Position
+			end
 		end
 	end)
+
+	-- 3. 核心切换逻辑统管函数
+	local function ToggleUI()
+		local isVisible = Main.Visible
+		Main.Visible = not isVisible          -- 隐藏/显示主面板
+		FloatingButton.Visible = isVisible    -- 状态相反：主面板在时悬浮窗藏，主面板没时悬浮窗出
+	end
+
+	-- 关闭按钮：触发隐藏主面板，呼出悬浮窗
+	Exit.MouseButton1Click:Connect(function()
+		ToggleUI()
+	end)
+
+	-- 点击悬浮窗：隐藏悬浮窗，重新呼出主面板
+	FloatingButton.MouseButton1Click:Connect(function()
+		ToggleUI()
+	end)
+
+	-- 快捷键 (LeftControl) 唤醒：无缝切换状态
+	UserInputService.InputBegan:Connect(function(input, gameProcessed)
+		if not gameProcessed and input.KeyCode == Enum.KeyCode.LeftControl then
+			ToggleUI()
+		end
+	end)
+
 	
 	local LibraryTabs = {}
 	function LibraryTabs:MakeTab(Name)

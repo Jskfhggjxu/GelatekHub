@@ -97,18 +97,6 @@ function Library:Create(Name, StartupText, Color)
 	Exit.Image = "http://www.roblox.com/asset/?id=10444336846"
 	Exit.ImageTransparency = 1.000
 
-	-- 【新增】最小化按钮样式属性设置
-	Minimize.Name = "Minimize"
-	Minimize.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Minimize.BackgroundTransparency = 1.000
-	Minimize.Position = UDim2.new(0.87, 0, 0.026, 0) -- 刚好在关闭按钮左边
-	Minimize.Size = UDim2.new(0, 15, 0, 15)
-	Minimize.Font = Enum.Font.GothamBold
-	Minimize.Text = "-"
-	Minimize.TextColor3 = Color3.fromRGB(200, 200, 200)
-	Minimize.TextSize = 16.000
-	Minimize.TextTransparency = 1.000 -- 初始透明，跟随出场动画淡入
-
 	LineSide.Name = "LineSide"
 	LineSide.BackgroundColor3 = Color3.fromRGB(54, 54, 54)
 	LineSide.BackgroundTransparency = 1.000

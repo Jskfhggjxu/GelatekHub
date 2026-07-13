@@ -46,9 +46,6 @@ function Library:Create(Name, StartupText, Color)
 	local Title = Instance.new("TextLabel")
 	local Exit = Instance.new("ImageButton")
 	
-	-- 【新增】最小化按钮声明
-	local Minimize = Instance.new("TextButton")
-	
 	local LineSide = Instance.new("TextLabel")
 	local LineTop = Instance.new("TextLabel")
 	
@@ -186,9 +183,6 @@ function Library:Create(Name, StartupText, Color)
 	Title.Parent = Main
 	Exit.Parent = Main
 	
-	-- 【新增】将最小化按钮挂载到主面板
-	Minimize.Parent = Main
-	
 	LineSide.Parent = Main
 	LineTop.Parent = Main
 	TabList.Parent = Main
@@ -219,11 +213,6 @@ function Library:Create(Name, StartupText, Color)
 		TweenImageTransparency(Main.Exit, {
 			["Time"] = 0.3,
 			["ImageTransparency"] = 0
-		})
-		-- 【新增】同步让最小化按钮淡入显现
-		TweenTextTransparency(Main.Minimize, {
-			["Time"] = 0.3,
-			["TextTransparency"] = 0
 		})
 		Main.TabList:TweenSize(UDim2.new(0,113,0,235), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.3)
 	end)

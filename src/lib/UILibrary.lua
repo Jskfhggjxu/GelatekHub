@@ -290,30 +290,53 @@ function Library:Create(Name, StartupText, Color)
 		GelatekUI.Enabled = false
 	end)
 	
-	-- ==========================================
-	-- 【核心修改 2】最小化按钮：控制高度缩放与内容隐藏
-	-- ==========================================
+-- ==========================================================================
+	-- 【完美修正版 2】最小化按钮：解决“下上一起缩”导致的位移出屏，并完美剔除毛边
+	-- ==========================================================================
 	local isMinimized = false
+	local originalSize = UDim2.new(0, 375, 0, 267)
+	local minimizedSize = UDim2.new(0, 375, 0, 29)
+	local TweenService = game:GetService("TweenService")
+
 	Minimize.MouseButton1Click:Connect(function()
 		isMinimized = not isMinimized
+		
+		-- 计算由于 AnchorPoint 设为 (0.5, 0.5) 导致的中心轴位移补偿
+		-- 267 像素缩小到 29 像素，总共减少了 238 像素
+		-- 因为是上下对称缩，所以顶部会往上顶出 238 / 2 = 119 像素
+		-- 我们必须在缩小的同时，让面板的 Position.Y.Offset 往下移动 119 像素，保持顶部绝对不动！
+		local currentPos = Main.Position
+		local targetYOffset = isMinimized and (currentPos.Y.Offset + 119) or (currentPos.Y.Offset - 119)
+		local targetPosition = UDim2.new(currentPos.X.Scale, currentPos.X.Offset, currentPos.Y.Scale, targetYOffset)
+
 		if isMinimized then
 			Minimize.Text = "+"
-			-- 缩减主面板高度到只剩顶部标题栏 (29像素)
-			Main:TweenSize(UDim2.new(0, 375, 0, 29), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.3, true)
-			-- 立即隐藏组件防止溢出
+			
+			-- 1. 瞬间隐藏可能产生边缘毛边的分割线和所有内容组件
+			LineTop.BackgroundTransparency = 1 -- 消除标题栏底部的分割线毛边
 			LineSide.Visible = false
-			LineTop.Visible = false
 			TabList.Visible = false
 			Tabs.Visible = false
+			
+			-- 2. 同步执行 大小缩小 ＋ 位置向下补偿 动画（实现完美“从下往上”收缩）
+			TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {
+				Size = minimizedSize,
+				Position = targetPosition
+			}):Play()
 		else
 			Minimize.Text = "-"
-			-- 恢复原版主面板大小 (267像素)
-			Main:TweenSize(UDim2.new(0, 375, 0, 267), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.3, true)
-			-- 动画结束后恢复组件显示
+			
+			-- 1. 同步执行 大小恢复 ＋ 位置向上复原 动画
+			TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {
+				Size = originalSize,
+				Position = targetPosition
+			}):Play()
+			
+			-- 2. 动画结束后，完美复原所有组件的可见性与透明度
 			task.delay(0.3, function()
 				if not isMinimized then
+					LineTop.BackgroundTransparency = 0 -- 恢复分割线
 					LineSide.Visible = true
-					LineTop.Visible = true
 					TabList.Visible = true
 					Tabs.Visible = true
 				end

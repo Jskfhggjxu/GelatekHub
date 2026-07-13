@@ -291,34 +291,36 @@ function Library:Create(Name, StartupText, Color)
 	end)
 	
 -- ==========================================================================
-	-- 【完美修正版 2】最小化按钮：解决“下上一起缩”导致的位移出屏，并完美剔除毛边
+	-- 【完美终结版 2】最小化按钮：彻底根除背景毛边残留、永久锁死坐标防止往上蹿
 	-- ==========================================================================
 	local isMinimized = false
 	local originalSize = UDim2.new(0, 375, 0, 267)
 	local minimizedSize = UDim2.new(0, 375, 0, 29)
 	local TweenService = game:GetService("TweenService")
 
+	-- 【核心救星】：在点击事件触发前，在初始化阶段直接记下 Main 面板最干净的初始 Y 轴 Offset 状态
+	-- 这样放大和缩小时就能用绝对固定的常量去计算，从根本上防止多次点击后坐标发生累计污染往上蹿！
+	local initialYOffset = Main.Position.Y.Offset
+
 	Minimize.MouseButton1Click:Connect(function()
 		isMinimized = not isMinimized
 		
-		-- 计算由于 AnchorPoint 设为 (0.5, 0.5) 导致的中心轴位移补偿
-		-- 267 像素缩小到 29 像素，总共减少了 238 像素
-		-- 因为是上下对称缩，所以顶部会往上顶出 238 / 2 = 119 像素
-		-- 我们必须在缩小的同时，让面板的 Position.Y.Offset 往下移动 119 像素，保持顶部绝对不动！
-		local currentPos = Main.Position
-		local targetYOffset = isMinimized and (currentPos.Y.Offset + 119) or (currentPos.Y.Offset - 119)
-		local targetPosition = UDim2.new(currentPos.X.Scale, currentPos.X.Offset, currentPos.Y.Scale, targetYOffset)
+		-- 固定的绝对坐标计算（不依赖会随动画乱变当前的 Main.Position）
+		-- 267 缩到 29 减少了 238 像素，由于中心锚点(0.5, 0.5)，顶部会往上顶出 119 像素
+		-- 最小化时：目标 Y 应该是 原始Y + 119； 展开回复时：目标 Y 必须死死回到 原始Y
+		local targetYOffset = isMinimized and (initialYOffset + 119) or initialYOffset
+		local targetPosition = UDim2.new(Main.Position.X.Scale, Main.Position.X.Offset, Main.Position.Y.Scale, targetYOffset)
 
 		if isMinimized then
 			Minimize.Text = "+"
 			
-			-- 1. 瞬间隐藏可能产生边缘毛边的分割线和所有内容组件
-			LineTop.BackgroundTransparency = 1 -- 消除标题栏底部的分割线毛边
+			-- 1. 瞬间关闭所有子组件的可见性，彻底解决背景、灰边、边框溢出毛边残留
+			LineTop.Visible = false
 			LineSide.Visible = false
 			TabList.Visible = false
 			Tabs.Visible = false
 			
-			-- 2. 同步执行 大小缩小 ＋ 位置向下补偿 动画（实现完美“从下往上”收缩）
+			-- 2. 同步执行 大小缩小 ＋ 位置向下补偿 动画
 			TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {
 				Size = minimizedSize,
 				Position = targetPosition
@@ -326,16 +328,16 @@ function Library:Create(Name, StartupText, Color)
 		else
 			Minimize.Text = "-"
 			
-			-- 1. 同步执行 大小恢复 ＋ 位置向上复原 动画
+			-- 1. 同步执行 大小恢复 ＋ 精准归位 动画（死死锁回初始 initialYOffset）
 			TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {
 				Size = originalSize,
 				Position = targetPosition
 			}):Play()
 			
-			-- 2. 动画结束后，完美复原所有组件的可见性与透明度
-			task.delay(0.3, function()
+			-- 2. 完美的等大框完全弹开后，再亮出内部组件，视觉体验最丝滑
+			task.delay(0.2, function()
 				if not isMinimized then
-					LineTop.BackgroundTransparency = 0 -- 恢复分割线
+					LineTop.Visible = true
 					LineSide.Visible = true
 					TabList.Visible = true
 					Tabs.Visible = true

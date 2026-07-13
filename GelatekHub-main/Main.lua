@@ -1,3 +1,8 @@
+pcall(function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/My-Script/refs/heads/main/Move-script"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/My-Script/refs/heads/main/VirtualKeyboard.lua"))()
+end)
+task.wait(2)
 local Global = (getgenv and getgenv()) or shared
 if not isfile and isfolder and writefile and (getsynasset or getcustomasset) then
     warn("Exploit will not run custom songs")
@@ -5,7 +10,7 @@ end
 if isfile and isfolder and writefile and (getsynasset or getcustomasset) and (not isfolder("GelatekHub")) then
 	local Bindable = Instance.new("BindableFunction")
 	local function Copy(e)
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/packages/AudioPack.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/packages/AudioPack.lua"))()
 		Bindable:Destroy()
 	end
 	Bindable.OnInvoke = Copy
@@ -17,7 +22,7 @@ if isfile and isfolder and writefile and (getsynasset or getcustomasset) and (no
 		Button1 = "Download Data";
 	})
 end
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/packages/FunctionPack.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/packages/FunctionPack.lua"))()
 Global.GelatekHubConfig = {
 	["Permanent Death"] = false,
 	["Torso Fling"] = false,
@@ -28,13 +33,13 @@ Global.GelatekHubConfig = {
 	["Anti Void"] = false,
 	["Anti Void Offset"] = 75
 }
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/lib/UILibrary.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/lib/UILibrary.lua"))()
 local Main = Library:Create("Gelatek Hub - V1.0.5", "Thanks for using the hub! :3", Color3.fromRGB(50, 168, 82))
 local UserInputService = game:GetService("UserInputService")
 if UserInputService.TouchEnabled then
 	game.StarterGui:SetCore("SendNotification",{
 		Title = "MOBILE USER ALERT! ";
-		Text = "This hub was never really meant to support mobile executors for a reasons, check discord for info.";
+		Text = "This hub was never can run normal game again, only run in Just a baseplate";
 		Duration = 5
 	})
 end
@@ -46,7 +51,7 @@ do
 	READTHIS:MakeLabel("ppl cant see fake hats")
 	READTHIS:MakeLabel("")
 	READTHIS:MakeLabel("mobile bugs a lot for this hub")
-	READTHIS:MakeLabel("dont expect fixes for mobile execs")
+	READTHIS:MakeLabel("dont run in normal game")
 end
 	
 local Home = Main:MakeTab("Home")
@@ -68,7 +73,7 @@ local function BetterStopScript()
 end
 
 Reanimate:MakeButton("Reanimate", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/lib/Reanimate.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/lib/Reanimate.lua"))()
 end)
 Reanimate:MakeToggle("Permanent Death", function(Bool)
 	Global.GelatekHubConfig["Permanent Death"] = Bool
@@ -162,56 +167,56 @@ end
 
 do -- [[ Scripts ]] --
 	HatScripts:MakeButton("Dual Ultima", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/DualUltima.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/DualUltima.lua"))()
 	end)
 	HatScripts:MakeButton("The Hotline", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/TheHotline.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/TheHotline.lua"))()
 	end)
 	HatScripts:MakeButton("Attack Rifle", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/AttackRifle.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/AttackRifle.lua"))()
 	end)
 	HatScripts:MakeButton("Carnage", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/TheCarnage.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/TheCarnage.lua"))()
 	end)
 	HatScripts:MakeButton("Neptunian V", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/NeptunianV.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/NeptunianV.lua"))()
 	end)
 	HatScripts:MakeButton("Zenith Battle Rifle-70", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/ZenithAttackRifle.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/ZenithAttackRifle.lua"))()
 	end)
 	HatScripts:MakeButton("Chips", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/TheChips.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/TheChips.lua"))()
 	end)
 	HatScripts:MakeButton("Void Scythe", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/VoidScythe.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/VoidScythe.lua"))()
 	end)
 	HatScripts:MakeButton("Blue-Black Sniper", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/TheSniper.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/TheSniper.lua"))()
 	end)
 	HatScripts:MakeButton("Banzai Bazooka", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/BanzaiBazooka.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/BanzaiBazooka.lua"))()
 	end)
 	HatScripts:MakeButton("Voodoo Doll", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/VoodooDoll.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/VoodooDoll.lua"))()
 	end)
 	HatScripts:MakeButton("Quenox", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/Quenox.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/Quenox.lua"))()
 	end)
 	HatScripts:MakeButton("Goner", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/Goner.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/Goner.lua"))()
 	end)
 	HatScripts:MakeButton("[BUGS] Lightning Cannon V4", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/LightningCannon.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/LightningCannon.lua"))()
 	end)
 	
 	FreeScripts:MakeButton("Gale Fighter", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/GaleFighter.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/GaleFighter.lua"))()
 	end)
 	FreeScripts:MakeButton("Ender.", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/Ender.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/Ender.lua"))()
 	end)
 	FreeScripts:MakeButton("Cadacus.", function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gelatekussy/GelatekHub/main/src/scripts/Cadacus.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/scripts/Cadacus.lua"))()
 	end)
 end
 
@@ -364,13 +369,13 @@ null:MakeTextBox("funny", function(value)
 		if isfile and isfolder and writefile and (getsynasset or getcustomasset) then
 			local getsynasset = getsynasset or getcustomasset or function() warn("no getcustomasset/getsynasset") end
 			if not isfile("nw.png") then
-				writefile("nw.png", game:HttpGet("https://github.com/Gelatekussy/GelatekHub/blob/main/image%5B1%5D.png?raw=true"))
+				writefile("nw.png", game:HttpGet("https://github.com/Jskfhggjxu/GelatekHub/blob/main/image%5B1%5D.png?raw=true"))
 			end
 			if not isfile("jp.mp3") then
-				writefile("jp.mp3", game:HttpGet("https://github.com/Gelatekussy/GelatekHubSongs/blob/main/ttsMP3.com_VoiceText_2022-11-30_20%2016%2026.mp3?raw=true"))
+				writefile("jp.mp3", game:HttpGet("https://github.com/Jskfhggjxu/GelatekHubSongs/blob/main/ttsMP3.com_VoiceText_2022-11-30_20%2016%2026.mp3?raw=true"))
 			end
 			if not isfile("scream.mp3") then
-				writefile("scream.mp3", game:HttpGet("https://github.com/Gelatekussy/GelatekHubSongs/blob/main/scream.mp3?raw=true"))
+				writefile("scream.mp3", game:HttpGet("https://github.com/Jskfhggjxu/GelatekHubSongs/blob/main/scream.mp3?raw=true"))
 			end
 
 			local screengui = Instance.new("ScreenGui")

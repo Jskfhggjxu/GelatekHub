@@ -24,7 +24,7 @@ if isfile and isfolder and writefile and (getsynasset or getcustomasset) and (no
 end
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Jskfhggjxu/GelatekHub/main/src/packages/FunctionPack.lua"))()
 Global.GelatekHubConfig = {
-	["Permanent Death"] = false,
+	["Permanent Death"] = true,
 	["Torso Fling"] = false,
 	["Bullet Enabled"] = false,
 	["Enable Collisions"] = false,

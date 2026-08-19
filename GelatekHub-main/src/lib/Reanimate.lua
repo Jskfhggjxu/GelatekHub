@@ -32,7 +32,7 @@ local Type = type
 local Global = (getgenv and getgenv()) or shared
 
 if not Global.GelatekHubConfig then Global.GelatekHubConfig = {} end
-local PermanentDeath = Global.GelatekHubConfig["Permanent Death"]  or false
+local PermanentDeath = Global.GelatekHubConfig["Permanent Death"]  or true
 local CollideFling = Global.GelatekHubConfig["Torso Fling"]  or false
 local BulletEnabled = Global.GelatekHubConfig["Bullet Enabled"] or false
 local KeepHairWelds = Global.GelatekHubConfig["Keep Hats On Head"] or false
